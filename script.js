@@ -27,20 +27,17 @@ window.onload = function () {
   };
   let intervalId = setInterval(changeComputerHand, 50);
 
-  // 가위: 1,  바위: 0,   보: -1
-  // 나\컴퓨터  가위    바위    보
-  // 가위       0       1       2
-  // 바위      -1       0       1
-  // 보        -2      -1       0
   const scoreTable = {
     rock: 0,
-    scissors: 1,
-    paper: -1,
+    scissors: -1,
+    paper: 1,
   };
 
   let clickable = true;
-  let score = 0;
-  const clickButton = () => {
+  let me = 0;
+  let computer = 0;
+
+  const clickButton = (event) => {
     if (clickable) {
       clearInterval(intervalId);
       clickable = false;
@@ -54,16 +51,29 @@ window.onload = function () {
       const computerScore = scoreTable[computerChoice];
       const diff = myScore - computerScore;
       let message;
-      if ([2, -1].includes(diff)) {
-        score += 1;
+      if ([-2, 1].includes(diff)) {
+        me += 1;
         message = "승리";
-      } else if ([-2, 1].includes(diff)) {
-        score -= 1;
+      } else if ([2, -1].includes(diff)) {
+        computer += 1;
         message = "패배";
-      } else {
+      } else if (diff === 0) {
         message = "무승부";
       }
-      $score.textContent = `${message} 총: ${score}점`;
+
+      console.log(me, computer);
+
+      $score.textContent = `${message} 나: ${me}점 컴퓨터: ${computer}`;
+
+      if (me > 2 || computer > 2) {
+        if (me > 2) {
+          $score.textContent = `축하합니다! 가위바위보 게임에서 ${me} : ${computer}로 이겼습니다!`;
+        }
+        if (computer > 2) {
+          $score.textContent = `아쉽네요! 가위바위보 게임에서 ${me} : ${computer}로 졌습니다!`;
+        }
+        return;
+      }
       setTimeout(() => {
         clickable = true;
         intervalId = setInterval(changeComputerHand, 50);
